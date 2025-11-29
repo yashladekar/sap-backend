@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { ZodError } from "zod";
 import { sapNoteBatchesService } from "../services/sap-note-batches.service.js";
 import {
   PaginationSchema,
@@ -13,8 +14,8 @@ export class SapNoteBatchesController {
       const result = await sapNoteBatchesService.findAll(pagination);
       res.json(result);
     } catch (error) {
-      if (error instanceof Error && error.name === "ZodError") {
-        res.status(400).json({ error: "Invalid query parameters", details: error });
+      if (error instanceof ZodError) {
+        res.status(400).json({ error: "Invalid query parameters", details: error.errors });
         return;
       }
       console.error("Error fetching SAP note batches:", error);
@@ -24,8 +25,12 @@ export class SapNoteBatchesController {
 
   async findById(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
-      const result = await sapNoteBatchesService.findById(id!);
+      const id = req.params["id"];
+      if (!id) {
+        res.status(400).json({ error: "ID parameter is required" });
+        return;
+      }
+      const result = await sapNoteBatchesService.findById(id);
 
       if (!result) {
         res.status(404).json({ error: "SAP note batch not found" });
@@ -45,8 +50,8 @@ export class SapNoteBatchesController {
       const result = await sapNoteBatchesService.create(data);
       res.status(201).json({ data: result });
     } catch (error) {
-      if (error instanceof Error && error.name === "ZodError") {
-        res.status(400).json({ error: "Invalid request body", details: error });
+      if (error instanceof ZodError) {
+        res.status(400).json({ error: "Invalid request body", details: error.errors });
         return;
       }
       console.error("Error creating SAP note batch:", error);
@@ -56,13 +61,17 @@ export class SapNoteBatchesController {
 
   async update(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
+      const id = req.params["id"];
+      if (!id) {
+        res.status(400).json({ error: "ID parameter is required" });
+        return;
+      }
       const data = UpdateSapNoteBatchSchema.parse(req.body);
-      const result = await sapNoteBatchesService.update(id!, data);
+      const result = await sapNoteBatchesService.update(id, data);
       res.json({ data: result });
     } catch (error) {
-      if (error instanceof Error && error.name === "ZodError") {
-        res.status(400).json({ error: "Invalid request body", details: error });
+      if (error instanceof ZodError) {
+        res.status(400).json({ error: "Invalid request body", details: error.errors });
         return;
       }
       if (error instanceof Error && error.message.includes("Record to update not found")) {
@@ -76,8 +85,12 @@ export class SapNoteBatchesController {
 
   async delete(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
-      await sapNoteBatchesService.delete(id!);
+      const id = req.params["id"];
+      if (!id) {
+        res.status(400).json({ error: "ID parameter is required" });
+        return;
+      }
+      await sapNoteBatchesService.delete(id);
       res.json({ message: "SAP note batch deleted successfully" });
     } catch (error) {
       if (error instanceof Error && error.message.includes("Record to delete does not exist")) {

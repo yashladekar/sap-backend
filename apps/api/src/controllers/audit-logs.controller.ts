@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { ZodError } from "zod";
 import { auditLogsService } from "../services/audit-logs.service.js";
 import {
   PaginationSchema,
@@ -12,8 +13,8 @@ export class AuditLogsController {
       const result = await auditLogsService.findAll(pagination);
       res.json(result);
     } catch (error) {
-      if (error instanceof Error && error.name === "ZodError") {
-        res.status(400).json({ error: "Invalid query parameters", details: error });
+      if (error instanceof ZodError) {
+        res.status(400).json({ error: "Invalid query parameters", details: error.errors });
         return;
       }
       console.error("Error fetching audit logs:", error);
@@ -23,8 +24,12 @@ export class AuditLogsController {
 
   async findById(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
-      const result = await auditLogsService.findById(id!);
+      const id = req.params["id"];
+      if (!id) {
+        res.status(400).json({ error: "ID parameter is required" });
+        return;
+      }
+      const result = await auditLogsService.findById(id);
 
       if (!result) {
         res.status(404).json({ error: "Audit log not found" });
@@ -44,8 +49,8 @@ export class AuditLogsController {
       const result = await auditLogsService.create(data);
       res.status(201).json({ data: result });
     } catch (error) {
-      if (error instanceof Error && error.name === "ZodError") {
-        res.status(400).json({ error: "Invalid request body", details: error });
+      if (error instanceof ZodError) {
+        res.status(400).json({ error: "Invalid request body", details: error.errors });
         return;
       }
       console.error("Error creating audit log:", error);
@@ -55,8 +60,12 @@ export class AuditLogsController {
 
   async delete(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
-      await auditLogsService.delete(id!);
+      const id = req.params["id"];
+      if (!id) {
+        res.status(400).json({ error: "ID parameter is required" });
+        return;
+      }
+      await auditLogsService.delete(id);
       res.json({ message: "Audit log deleted successfully" });
     } catch (error) {
       if (error instanceof Error && error.message.includes("Record to delete does not exist")) {

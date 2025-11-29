@@ -186,7 +186,7 @@ export const CreatePaymentSchema = z.object({
   provider: z.string().min(1).max(50),
   providerPaymentId: z.string().min(1).max(255),
   amount: z.number().positive(),
-  currency: z.string().length(3),
+  currency: z.string().length(3).regex(/^[A-Z]{3}$/, "Currency must be a valid ISO 4217 code (e.g., USD, EUR)"),
   status: z.string().min(1).max(50),
 });
 
@@ -194,7 +194,7 @@ export const UpdatePaymentSchema = z.object({
   provider: z.string().min(1).max(50).optional(),
   providerPaymentId: z.string().min(1).max(255).optional(),
   amount: z.number().positive().optional(),
-  currency: z.string().length(3).optional(),
+  currency: z.string().length(3).regex(/^[A-Z]{3}$/, "Currency must be a valid ISO 4217 code (e.g., USD, EUR)").optional(),
   status: z.string().min(1).max(50).optional(),
 });
 

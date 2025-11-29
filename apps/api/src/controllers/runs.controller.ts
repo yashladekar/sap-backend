@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { ZodError } from "zod";
 import { runsService } from "../services/runs.service.js";
 import {
   PaginationSchema,
@@ -13,8 +14,8 @@ export class RunsController {
       const result = await runsService.findAll(pagination);
       res.json(result);
     } catch (error) {
-      if (error instanceof Error && error.name === "ZodError") {
-        res.status(400).json({ error: "Invalid query parameters", details: error });
+      if (error instanceof ZodError) {
+        res.status(400).json({ error: "Invalid query parameters", details: error.errors });
         return;
       }
       console.error("Error fetching runs:", error);
@@ -24,8 +25,12 @@ export class RunsController {
 
   async findById(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
-      const result = await runsService.findById(id!);
+      const id = req.params["id"];
+      if (!id) {
+        res.status(400).json({ error: "ID parameter is required" });
+        return;
+      }
+      const result = await runsService.findById(id);
 
       if (!result) {
         res.status(404).json({ error: "Run not found" });
@@ -45,8 +50,8 @@ export class RunsController {
       const result = await runsService.create(data);
       res.status(201).json({ data: result });
     } catch (error) {
-      if (error instanceof Error && error.name === "ZodError") {
-        res.status(400).json({ error: "Invalid request body", details: error });
+      if (error instanceof ZodError) {
+        res.status(400).json({ error: "Invalid request body", details: error.errors });
         return;
       }
       console.error("Error creating run:", error);
@@ -56,13 +61,17 @@ export class RunsController {
 
   async update(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
+      const id = req.params["id"];
+      if (!id) {
+        res.status(400).json({ error: "ID parameter is required" });
+        return;
+      }
       const data = UpdateRunSchema.parse(req.body);
-      const result = await runsService.update(id!, data);
+      const result = await runsService.update(id, data);
       res.json({ data: result });
     } catch (error) {
-      if (error instanceof Error && error.name === "ZodError") {
-        res.status(400).json({ error: "Invalid request body", details: error });
+      if (error instanceof ZodError) {
+        res.status(400).json({ error: "Invalid request body", details: error.errors });
         return;
       }
       if (error instanceof Error && error.message.includes("Record to update not found")) {
@@ -76,8 +85,12 @@ export class RunsController {
 
   async delete(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
-      await runsService.delete(id!);
+      const id = req.params["id"];
+      if (!id) {
+        res.status(400).json({ error: "ID parameter is required" });
+        return;
+      }
+      await runsService.delete(id);
       res.json({ message: "Run deleted successfully" });
     } catch (error) {
       if (error instanceof Error && error.message.includes("Record to delete does not exist")) {

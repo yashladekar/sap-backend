@@ -5,6 +5,19 @@ import type {
   PaginationParams,
 } from "../types/index.js";
 
+/**
+ * Helper to convert optional date string to Date or undefined/null for Prisma updates
+ */
+function parseDateForUpdate(value: string | null | undefined): Date | null | undefined {
+  if (value === undefined) {
+    return undefined; // Don't update the field
+  }
+  if (value === null) {
+    return null; // Set the field to null
+  }
+  return new Date(value); // Set the field to the parsed date
+}
+
 export class SapNoteBatchesService {
   async findAll(params: PaginationParams) {
     const { page, limit } = params;
@@ -64,8 +77,8 @@ export class SapNoteBatchesService {
         monthKey: data.monthKey,
         notesFileS3: data.notesFileS3,
         status: data.status,
-        startedAt: data.startedAt ? new Date(data.startedAt) : data.startedAt === null ? null : undefined,
-        finishedAt: data.finishedAt ? new Date(data.finishedAt) : data.finishedAt === null ? null : undefined,
+        startedAt: parseDateForUpdate(data.startedAt),
+        finishedAt: parseDateForUpdate(data.finishedAt),
         metadata: data.metadata,
       },
     });

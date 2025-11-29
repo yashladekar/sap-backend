@@ -5,6 +5,19 @@ import type {
   PaginationParams,
 } from "../types/index.js";
 
+/**
+ * Helper to convert optional date string to Date or undefined/null for Prisma updates
+ */
+function parseDateForUpdate(value: string | null | undefined): Date | null | undefined {
+  if (value === undefined) {
+    return undefined; // Don't update the field
+  }
+  if (value === null) {
+    return null; // Set the field to null
+  }
+  return new Date(value); // Set the field to the parsed date
+}
+
 export class NoteDetailsService {
   async findAll(params: PaginationParams) {
     const { page, limit } = params;
@@ -69,7 +82,7 @@ export class NoteDetailsService {
         solutionSummary: data.solutionSummary,
         workaroundSummary: data.workaroundSummary,
         rawSectionS3: data.rawSectionS3,
-        lastParsedAt: data.lastParsedAt ? new Date(data.lastParsedAt) : data.lastParsedAt === null ? null : undefined,
+        lastParsedAt: parseDateForUpdate(data.lastParsedAt),
       },
       include: {
         note: true,

@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { ZodError } from "zod";
 import { notesService } from "../services/notes.service.js";
 import {
   PaginationSchema,
@@ -13,8 +14,8 @@ export class NotesController {
       const result = await notesService.findAll(pagination);
       res.json(result);
     } catch (error) {
-      if (error instanceof Error && error.name === "ZodError") {
-        res.status(400).json({ error: "Invalid query parameters", details: error });
+      if (error instanceof ZodError) {
+        res.status(400).json({ error: "Invalid query parameters", details: error.errors });
         return;
       }
       console.error("Error fetching notes:", error);
@@ -24,8 +25,12 @@ export class NotesController {
 
   async findById(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
-      const result = await notesService.findById(id!);
+      const id = req.params["id"];
+      if (!id) {
+        res.status(400).json({ error: "ID parameter is required" });
+        return;
+      }
+      const result = await notesService.findById(id);
 
       if (!result) {
         res.status(404).json({ error: "Note not found" });
@@ -45,8 +50,8 @@ export class NotesController {
       const result = await notesService.create(data);
       res.status(201).json({ data: result });
     } catch (error) {
-      if (error instanceof Error && error.name === "ZodError") {
-        res.status(400).json({ error: "Invalid request body", details: error });
+      if (error instanceof ZodError) {
+        res.status(400).json({ error: "Invalid request body", details: error.errors });
         return;
       }
       console.error("Error creating note:", error);
@@ -56,13 +61,17 @@ export class NotesController {
 
   async update(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
+      const id = req.params["id"];
+      if (!id) {
+        res.status(400).json({ error: "ID parameter is required" });
+        return;
+      }
       const data = UpdateNoteSchema.parse(req.body);
-      const result = await notesService.update(id!, data);
+      const result = await notesService.update(id, data);
       res.json({ data: result });
     } catch (error) {
-      if (error instanceof Error && error.name === "ZodError") {
-        res.status(400).json({ error: "Invalid request body", details: error });
+      if (error instanceof ZodError) {
+        res.status(400).json({ error: "Invalid request body", details: error.errors });
         return;
       }
       if (error instanceof Error && error.message.includes("Record to update not found")) {
@@ -76,8 +85,12 @@ export class NotesController {
 
   async delete(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
-      await notesService.delete(id!);
+      const id = req.params["id"];
+      if (!id) {
+        res.status(400).json({ error: "ID parameter is required" });
+        return;
+      }
+      await notesService.delete(id);
       res.json({ message: "Note deleted successfully" });
     } catch (error) {
       if (error instanceof Error && error.message.includes("Record to delete does not exist")) {
