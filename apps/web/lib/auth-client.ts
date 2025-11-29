@@ -61,14 +61,14 @@ export const resetPassword = async (opts: ResetPasswordOpts): Promise<AuthResult
   }
 };
 
-// Extended user type with role
+// Extended user type with role (lowercase to match database enum)
 export interface ExtendedUser {
   id: string;
   email: string;
   name: string | null;
   image: string | null;
   emailVerified: boolean;
-  role?: "SUPER_ADMIN" | "ADMIN" | "MANAGER" | "USER" | "GUEST";
+  role?: "super_admin" | "admin" | "manager" | "user" | "guest";
   banned?: boolean;
   banReason?: string | null;
   banExpires?: Date | null;
@@ -83,7 +83,7 @@ export function getExtendedUser(user: unknown): ExtendedUser {
     name: (u.name as string) ?? null,
     image: (u.image as string) ?? null,
     emailVerified: (u.emailVerified as boolean) ?? false,
-    role: (u.role as ExtendedUser["role"]) ?? "USER",
+    role: (u.role as ExtendedUser["role"]) ?? "user",
     banned: (u.banned as boolean) ?? false,
     banReason: (u.banReason as string) ?? null,
     banExpires: u.banExpires ? new Date(u.banExpires as string) : null,

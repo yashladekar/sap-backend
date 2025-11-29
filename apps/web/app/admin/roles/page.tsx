@@ -8,7 +8,8 @@ import { Button } from "@workspace/ui/components/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@workspace/ui/components/card";
 import { Badge } from "@workspace/ui/components/badge";
 import { Loader2, ArrowLeft, Check, X } from "lucide-react";
-import { Role, Permission, ROLE_PERMISSIONS, getRolePermissions } from "@workspace/auth";
+import { Role, ROLE_HIERARCHY } from "@workspace/auth/roles";
+import { Permission, ROLE_PERMISSIONS, getRolePermissions } from "@workspace/auth/permissions";
 
 export default function AdminRolesPage() {
   const router = useRouter();
@@ -28,7 +29,7 @@ export default function AdminRolesPage() {
   }
 
   const user = getExtendedUser(session.user);
-  const isAdmin = user.role === "ADMIN" || user.role === "SUPER_ADMIN";
+  const isAdmin = user.role === "admin" || user.role === "super_admin";
 
   if (!isAdmin) {
     return (

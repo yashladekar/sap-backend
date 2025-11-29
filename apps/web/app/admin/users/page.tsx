@@ -244,8 +244,8 @@ export default function AdminUsersPage() {
   }
 
   const currentUser = getExtendedUser(session.user);
-  const isAdmin = currentUser.role === "ADMIN" || currentUser.role === "SUPER_ADMIN";
-  const isSuperAdmin = currentUser.role === "SUPER_ADMIN";
+  const isAdmin = currentUser.role === "admin" || currentUser.role === "super_admin";
+  const isSuperAdmin = currentUser.role === "super_admin";
 
   if (!isAdmin) {
     return (
@@ -483,7 +483,7 @@ export default function AdminUsersPage() {
           </DialogHeader>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-2">
-              {["GUEST", "USER", "MANAGER", "ADMIN", "SUPER_ADMIN"].map((role) => (
+              {["guest", "user", "manager", "admin", "super_admin"].map((role) => (
                 <Button
                   key={role}
                   variant={selectedRole === role ? "default" : "outline"}

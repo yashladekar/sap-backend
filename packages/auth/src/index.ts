@@ -1,5 +1,5 @@
-export { createAuth, type Auth } from "./config.js";
-export { Role, ROLE_HIERARCHY, hasRoleLevel, getRoleDisplayName, getManageableRoles } from "./roles.js";
+export { createAuth, type Auth } from "./config";
+export { Role, ROLE_HIERARCHY, hasRoleLevel, getRoleDisplayName, getManageableRoles } from "./roles";
 export {
   Permission,
   ROLE_PERMISSIONS,
@@ -7,4 +7,4 @@ export {
   getRolePermissions,
   hasAnyPermission,
   hasAllPermissions,
-} from "./permissions.js";
+} from "./permissions";

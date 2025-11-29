@@ -59,7 +59,7 @@ export default function DashboardPage() {
   }
 
   const user = getExtendedUser(session.user);
-  const isAdmin = user.role === "ADMIN" || user.role === "SUPER_ADMIN";
+  const isAdmin = user.role === "admin" || user.role === "super_admin";
 
   return (
     <div className="min-h-screen bg-background">
@@ -212,11 +212,11 @@ export default function DashboardPage() {
                 <span className="font-semibold">{user.role}</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                {user.role === "SUPER_ADMIN" && "Full system access with all permissions"}
-                {user.role === "ADMIN" && "Administrative access to manage users"}
-                {user.role === "MANAGER" && "Can manage resources and view users"}
-                {user.role === "USER" && "Standard user access"}
-                {user.role === "GUEST" && "Limited read-only access"}
+                {user.role === "super_admin" && "Full system access with all permissions"}
+                {user.role === "admin" && "Administrative access to manage users"}
+                {user.role === "manager" && "Can manage resources and view users"}
+                {user.role === "user" && "Standard user access"}
+                {user.role === "guest" && "Limited read-only access"}
               </p>
             </CardContent>
           </Card>

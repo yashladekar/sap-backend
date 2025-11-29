@@ -1,4 +1,4 @@
-import { Role } from "./roles.js";
+import { Role } from "./roles";
 
 /**
  * Permission definitions for the application

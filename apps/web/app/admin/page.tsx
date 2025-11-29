@@ -89,7 +89,7 @@ export default function AdminPage() {
   }
 
   const user = getExtendedUser(session.user);
-  const isAdmin = user.role === "ADMIN" || user.role === "SUPER_ADMIN";
+  const isAdmin = user.role === "admin" || user.role === "super_admin";
 
   if (!isAdmin) {
     return (
@@ -197,8 +197,8 @@ export default function AdminPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">
-                    {(stats.stats.usersByRole["ADMIN"] ?? 0) +
-                      (stats.stats.usersByRole["SUPER_ADMIN"] ?? 0)}
+                    {(stats.stats.usersByRole["admin"] ?? 0) +
+                      (stats.stats.usersByRole["super_admin"] ?? 0)}
                   </div>
                 </CardContent>
               </Card>
