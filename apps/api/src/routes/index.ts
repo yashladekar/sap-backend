@@ -1,11 +1,8 @@
 export { userRoutes } from "./users.js";
 export { adminRoutes } from "./admin.js";
-export { clientComponentsRoutes } from "./client-components.js";
 export { sapNoteBatchesRoutes } from "./sap-note-batches.js";
 export { runsRoutes } from "./runs.js";
 export { notesRoutes } from "./notes.js";
-export { noteDetailsRoutes } from "./note-details.js";
-export { noteApplicabilityResultsRoutes } from "./note-applicability-results.js";
 export { auditLogsRoutes } from "./audit-logs.js";
 export { paymentsRoutes } from "./payments.js";
 export { clientSystemsRoutes } from "./client-systems.js";

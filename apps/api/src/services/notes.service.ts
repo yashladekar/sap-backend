@@ -1,25 +1,74 @@
 import { prisma } from "../lib/prisma.js";
+import { Prisma } from "@workspace/database";
 import type {
   CreateNoteDto,
   UpdateNoteDto,
   PaginationParams,
 } from "../types/index.js";
 
-/**
- * Helper to convert optional date string to Date or undefined/null for Prisma updates
- */
-function parseDateForUpdate(value: string | null | undefined): Date | null | undefined {
-  if (value === undefined) {
-    return undefined; // Don't update the field
-  }
-  if (value === null) {
-    return null; // Set the field to null
-  }
-  return new Date(value); // Set the field to the parsed date
+// Type definitions for Note model
+type NoteBase = {
+  noteId: string;
+  batchId: string;
+  title: string;
+  category: string | null;
+  priority: string | null;
+  cvss: number | null;
+  releasedOn: Date | null;
+  rawContentS3: string | null;
+  fetchedAt: Date | null;
+  metadata: Prisma.JsonValue;
+};
+
+type NoteWithBatch = NoteBase & {
+  batch: {
+    id: string;
+    monthKey: string;
+    notesFileS3: string | null;
+    status: string;
+    startedAt: Date | null;
+    finishedAt: Date | null;
+    metadata: Prisma.JsonValue;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+};
+
+type NoteValidity = {
+  id: string;
+  noteId: string;
+  component: string;
+  release: string;
+  minSpLevel: number;
+  maxSpLevel: number;
+};
+
+type ApplicabilityResult = {
+  id: string;
+  runId: string;
+  noteId: string;
+  status: string;
+  reason: string | null;
+};
+
+function parseDateForUpdate(
+  value: string | null | undefined
+): Date | null | undefined {
+  if (value === undefined) return undefined;
+  if (value === null) return null;
+  return new Date(value);
 }
 
 export class NotesService {
-  async findAll(params: PaginationParams) {
+  async findAll(params: PaginationParams): Promise<{
+    data: Array<NoteWithBatch & { validities: NoteValidity[] }>;
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      pages: number;
+    };
+  }> {
     const { page, limit } = params;
     const skip = (page - 1) * limit;
 
@@ -28,6 +77,10 @@ export class NotesService {
         skip,
         take: limit,
         orderBy: { fetchedAt: "desc" },
+        include: {
+          batch: true,
+          validities: true,
+        },
       }),
       prisma.note.count(),
     ]);
@@ -43,35 +96,35 @@ export class NotesService {
     };
   }
 
-  async findById(noteId: string) {
+  async findById(noteId: string): Promise<(NoteWithBatch & {
+    validities: NoteValidity[];
+    results: ApplicabilityResult[];
+  }) | null> {
     return prisma.note.findUnique({
       where: { noteId },
       include: {
-        noteDetails: true,
-        sapBatchNotes: {
-          include: {
-            batch: true,
-          },
-        },
-        noteApplicabilityResults: true,
+        batch: true,
+        validities: true,
+        results: true,
       },
     });
   }
 
-  async create(data: CreateNoteDto) {
+  async create(data: CreateNoteDto): Promise<NoteBase> {
     return prisma.note.create({
       data: {
         noteId: data.noteId,
+        batchId: data.batchId,
         title: data.title,
         cvss: data.cvss,
         rawContentS3: data.rawContentS3,
         fetchedAt: data.fetchedAt ? new Date(data.fetchedAt) : undefined,
-        metadata: data.metadata ?? undefined,
+        metadata: data.metadata as Prisma.InputJsonValue | undefined,
       },
     });
   }
 
-  async update(noteId: string, data: UpdateNoteDto) {
+  async update(noteId: string, data: UpdateNoteDto): Promise<NoteBase> {
     return prisma.note.update({
       where: { noteId },
       data: {
@@ -79,12 +132,14 @@ export class NotesService {
         cvss: data.cvss,
         rawContentS3: data.rawContentS3,
         fetchedAt: parseDateForUpdate(data.fetchedAt),
-        metadata: data.metadata,
+        metadata: data.metadata === null
+          ? Prisma.DbNull
+          : (data.metadata as Prisma.InputJsonValue | undefined),
       },
     });
   }
 
-  async delete(noteId: string) {
+  async delete(noteId: string): Promise<NoteBase> {
     return prisma.note.delete({
       where: { noteId },
     });

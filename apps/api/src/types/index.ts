@@ -344,9 +344,10 @@ export type UpdateRunDto = z.infer<typeof UpdateRunSchema>;
 // ============================================
 export const CreateNoteSchema = z.object({
   noteId: z.string().min(1).max(100),
+  batchId: z.string().uuid(),
   title: z.string().min(1).max(500),
   cvss: z.number().min(0).max(10).optional(),
-  rawContentS3: z.string().min(1).max(500),
+  rawContentS3: z.string().min(1).max(500).optional(),
   fetchedAt: z.string().datetime().optional(),
   metadata: z.record(z.unknown()).optional(),
 });
