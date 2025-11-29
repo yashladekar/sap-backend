@@ -1,0 +1,43 @@
+{
+  "name": "@workspace/auth",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./roles": {
+      "types": "./dist/roles.d.ts",
+      "import": "./dist/roles.mjs",
+      "require": "./dist/roles.js"
+    },
+    "./permissions": {
+      "types": "./dist/permissions.d.ts",
+      "import": "./dist/permissions.mjs",
+      "require": "./dist/permissions.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint . --max-warnings 0"
+  },
+  "dependencies": {
+    "better-auth": "^1.1.10",
+    "@workspace/database": "workspace:*"
+  },
+  "devDependencies": {
+    "@workspace/eslint-config": "workspace:*",
+    "@workspace/typescript-config": "workspace:*",
+    "@types/node": "^22.10.1",
+    "eslint": "^9.16.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  }
+}
