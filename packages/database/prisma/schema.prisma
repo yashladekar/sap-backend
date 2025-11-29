@@ -12,63 +12,74 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String    @id @default(uuid())
   email         String    @unique
   name          String?
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean   @default(false) @map("email_verified")
   image         String?
   role          Role      @default(user)
+  status        String    @default("active")
   banned        Boolean   @default(false)
-  banReason     String?
-  banExpires    DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  banReason     String?   @map("ban_reason")
+  banExpires    DateTime? @map("ban_expires")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
 
-  sessions Session[]
-  accounts Account[]
+  sessions  Session[]
+  accounts  Account[]
+  runs      Run[]
+  auditLogs AuditLog[]
+  payments  Payment[]
+
+  @@map("users")
 }
 
 model Session {
-  id             String   @id @default(cuid())
-  userId         String
+  id             String   @id @default(uuid())
+  userId         String   @map("user_id")
   token          String   @unique
-  expiresAt      DateTime
-  ipAddress      String?
-  userAgent      String?
-  impersonatedBy String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  expiresAt      DateTime @map("expires_at")
+  ipAddress      String?  @map("ip_address")
+  userAgent      String?  @map("user_agent")
+  impersonatedBy String?  @map("impersonated_by")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
 }
 
 model Account {
-  id                    String    @id @default(cuid())
-  userId                String
-  accountId             String
-  providerId            String
-  accessToken           String?
-  refreshToken          String?
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
+  id                    String    @id @default(uuid())
+  userId                String    @map("user_id")
+  accountId             String    @map("account_id")
+  providerId            String    @map("provider_id")
+  accessToken           String?   @map("access_token")
+  refreshToken          String?   @map("refresh_token")
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at")
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at")
   scope                 String?
-  idToken               String?
+  idToken               String?   @map("id_token")
   password              String?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([providerId, accountId])
+  @@map("accounts")
 }
 
 model Verification {
-  id         String   @id @default(cuid())
+  id         String   @id @default(uuid())
   identifier String
   value      String
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  expiresAt  DateTime @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("verifications")
 }
 
 enum Role {
@@ -77,4 +88,142 @@ enum Role {
   manager
   user
   guest
+}
+
+// ============================================
+// SAP Notes Applicability System Models
+// ============================================
+
+model ClientComponent {
+  id               String   @id @default(uuid())
+  name             String
+  installedVersion String   @map("installed_version")
+  kernelVersion    String   @map("kernel_version")
+  metadata         Json?
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  noteApplicabilityResults NoteApplicabilityResult[]
+
+  @@map("client_components")
+}
+
+model SapNoteBatch {
+  id          String    @id @default(uuid())
+  monthKey    String    @map("month_key")
+  notesFileS3 String    @map("notes_file_s3")
+  status      String
+  startedAt   DateTime? @map("started_at")
+  finishedAt  DateTime? @map("finished_at")
+  metadata    Json?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  sapBatchNotes SapBatchNote[]
+  runs          Run[]
+
+  @@map("sap_note_batches")
+}
+
+model SapBatchNote {
+  id      String @id @default(uuid())
+  batchId String @map("batch_id")
+  noteId  String @map("note_id")
+
+  batch SapNoteBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  note  Note         @relation(fields: [noteId], references: [noteId], onDelete: Cascade)
+
+  @@map("sap_batch_notes")
+}
+
+model Run {
+  id           String    @id @default(uuid())
+  batchId      String    @map("batch_id")
+  uploadedBy   String    @map("uploaded_by")
+  notesFileS3  String    @map("notes_file_s3")
+  clientFileS3 String    @map("client_file_s3")
+  status       String
+  startedAt    DateTime? @map("started_at")
+  finishedAt   DateTime? @map("finished_at")
+
+  batch                    SapNoteBatch              @relation(fields: [batchId], references: [id])
+  user                     User                      @relation(fields: [uploadedBy], references: [id])
+  noteApplicabilityResults NoteApplicabilityResult[]
+
+  @@map("runs")
+}
+
+model Note {
+  noteId       String    @id @map("note_id")
+  title        String
+  cvss         Float?
+  rawContentS3 String    @map("raw_content_s3")
+  fetchedAt    DateTime? @map("fetched_at")
+  metadata     Json?
+
+  noteDetails              NoteDetail[]
+  sapBatchNotes            SapBatchNote[]
+  noteApplicabilityResults NoteApplicabilityResult[]
+
+  @@map("notes")
+}
+
+model NoteDetail {
+  id                String    @id @default(uuid())
+  noteId            String    @map("note_id")
+  componentPattern  String    @map("component_pattern")
+  affectedRange     String    @map("affected_range")
+  solutionSummary   String?   @map("solution_summary")
+  workaroundSummary String?   @map("workaround_summary")
+  rawSectionS3      String?   @map("raw_section_s3")
+  lastParsedAt      DateTime? @map("last_parsed_at")
+
+  note Note @relation(fields: [noteId], references: [noteId], onDelete: Cascade)
+
+  @@map("note_details")
+}
+
+model NoteApplicabilityResult {
+  id                String  @id @default(uuid())
+  runId             String  @map("run_id")
+  noteId            String  @map("note_id")
+  clientComponentId String  @map("client_component_id")
+  component         String
+  clientVersion     String  @map("client_version")
+  applicable        String
+  confidenceScore   Float?  @map("confidence_score")
+  reason            String?
+
+  run             Run             @relation(fields: [runId], references: [id], onDelete: Cascade)
+  note            Note            @relation(fields: [noteId], references: [noteId])
+  clientComponent ClientComponent @relation(fields: [clientComponentId], references: [id])
+
+  @@map("note_applicability_results")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  actorId   String   @map("actor_id")
+  action    String
+  details   String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  actor User @relation(fields: [actorId], references: [id])
+
+  @@map("audit_logs")
+}
+
+model Payment {
+  id                String   @id @default(uuid())
+  userId            String   @map("user_id")
+  provider          String
+  providerPaymentId String   @map("provider_payment_id")
+  amount            Float
+  currency          String
+  status            String
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("payments")
 }
