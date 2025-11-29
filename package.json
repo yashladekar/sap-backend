@@ -18,5 +18,16 @@
   "packageManager": "pnpm@10.4.1",
   "engines": {
     "node": ">=20"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "@tailwindcss/oxide",
+      "core-js-pure",
+      "esbuild",
+      "prisma",
+      "sharp"
+    ]
   }
 }
