@@ -14,6 +14,7 @@ import { noteDetailsRoutes } from "./routes/note-details.js";
 import { noteApplicabilityResultsRoutes } from "./routes/note-applicability-results.js";
 import { auditLogsRoutes } from "./routes/audit-logs.js";
 import { paymentsRoutes } from "./routes/payments.js";
+import { clientSystemsRoutes, ingestionRoutes } from "./routes/index.js";
 
 const app = express();
 const PORT = process.env.PORT ?? 3001;
@@ -71,6 +72,8 @@ app.use("/api/note-details", noteDetailsRoutes);
 app.use("/api/note-applicability-results", noteApplicabilityResultsRoutes);
 app.use("/api/audit-logs", auditLogsRoutes);
 app.use("/api/payments", paymentsRoutes);
+app.use("/api/client-systems", clientSystemsRoutes);
+app.use("/api/ingestion", ingestionRoutes);
 
 // 404 handler
 app.use((_req, res) => {

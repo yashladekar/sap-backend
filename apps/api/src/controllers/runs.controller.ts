@@ -44,6 +44,7 @@ export class RunsController {
     }
   }
 
+  // in apps/api/src/controllers/runs.controller.ts
   async create(req: Request, res: Response): Promise<void> {
     try {
       const data = CreateRunSchema.parse(req.body);
@@ -58,6 +59,7 @@ export class RunsController {
       res.status(500).json({ error: "Failed to create run" });
     }
   }
+
 
   async update(req: Request, res: Response): Promise<void> {
     try {

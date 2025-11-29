@@ -8,3 +8,5 @@ export { noteDetailsRoutes } from "./note-details.js";
 export { noteApplicabilityResultsRoutes } from "./note-applicability-results.js";
 export { auditLogsRoutes } from "./audit-logs.js";
 export { paymentsRoutes } from "./payments.js";
+export { clientSystemsRoutes } from "./client-systems.js";
+export { ingestionRoutes } from "./ingestion.js";
