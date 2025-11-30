@@ -1,0 +1,227 @@
+[
+  {
+    "id": 1,
+    "CEVID": "CEV-001",
+    "Title": "Remote Code Execution Vulnerability in XYZ Software",
+    "severity": "Critical",
+    "cvss": 9.8,
+    "affectedSystems": ["Windows Server 2019", "Linux Ubuntu 20.04", "Web Portal"],
+    "status": "open"
+  },
+  {
+    "id": 2,
+    "CEVID": "CEV-002",
+    "Title": "SQL Injection in Login Module",
+    "severity": "High",
+    "cvss": 8.7,
+    "affectedSystems": ["Web Portal", "API Gateway"],
+    "status": "in progress"
+  },
+  {
+    "id": 3,
+    "CEVID": "CEV-003",
+    "Title": "Cross-Site Scripting in Comments Section",
+    "severity": "Medium",
+    "cvss": 6.1,
+    "affectedSystems": ["Blog Platform"],
+    "status": "patched"
+  },
+  {
+    "id": 4,
+    "CEVID": "CEV-004",
+    "Title": "Privilege Escalation via Misconfigured Sudoers",
+    "severity": "Critical",
+    "cvss": 9.1,
+    "affectedSystems": ["Linux CentOS 7"],
+    "status": "open"
+  },
+  {
+    "id": 5,
+    "CEVID": "CEV-005",
+    "Title": "Sensitive Data Exposure in API Response",
+    "severity": "High",
+    "cvss": 7.9,
+    "affectedSystems": ["API Gateway", "Mobile App"],
+    "status": "open"
+  },
+  {
+    "id": 6,
+    "CEVID": "CEV-006",
+    "Title": "Denial of Service via Resource Exhaustion",
+    "severity": "High",
+    "cvss": 8.2,
+    "affectedSystems": ["Web Server", "Database Server"],
+    "status": "open"
+  },
+  {
+    "id": 7,
+    "CEVID": "CEV-007",
+    "Title": "Insecure Deserialization in File Upload",
+    "severity": "Critical",
+    "cvss": 9.3,
+    "affectedSystems": ["Document Management System"],
+    "status": "open"
+  },
+  {
+    "id": 8,
+    "CEVID": "CEV-008",
+    "Title": "Broken Authentication in Admin Panel",
+    "severity": "High",
+    "cvss": 8.5,
+    "affectedSystems": ["Admin Portal"],
+    "status": "open"
+  },
+  {
+    "id": 9,
+    "CEVID": "CEV-009",
+    "Title": "Directory Traversal in File Download Endpoint",
+    "severity": "Medium",
+    "cvss": 6.4,
+    "affectedSystems": ["Web API"],
+    "status": "open"
+  },
+  {
+    "id": 10,
+    "CEVID": "CEV-010",
+    "Title": "Improper Certificate Validation",
+    "severity": "Medium",
+    "cvss": 6.7,
+    "affectedSystems": ["Mobile App", "Desktop Client"],
+    "status": "open"
+  },
+  {
+    "id": 11,
+    "CEVID": "CEV-011",
+    "Title": "Hardcoded Credentials in Source Code",
+    "severity": "High",
+    "cvss": 7.5,
+    "affectedSystems": ["Source Repository", "CI/CD Pipeline"],
+    "status": "open"
+  },
+  {
+    "id": 12,
+    "CEVID": "CEV-012",
+    "Title": "Unrestricted File Upload",
+    "severity": "Critical",
+    "cvss": 9.0,
+    "affectedSystems": ["Web Portal"],
+    "status": "open"
+  },
+  {
+    "id": 13,
+    "CEVID": "CEV-013",
+    "Title": "Open Redirect in Login Flow",
+    "severity": "Low",
+    "cvss": 4.3,
+    "affectedSystems": ["Web Portal"],
+    "status": "open"
+  },
+  {
+    "id": 14,
+    "CEVID": "CEV-014",
+    "Title": "Information Disclosure via Verbose Error Messages",
+    "severity": "Medium",
+    "cvss": 5.8,
+    "affectedSystems": ["API Gateway"],
+    "status": "open"
+  },
+  {
+    "id": 15,
+    "CEVID": "CEV-015",
+    "Title": "Cross-Site Request Forgery in Profile Update",
+    "severity": "Medium",
+    "cvss": 6.2,
+    "affectedSystems": ["User Portal"],
+    "status": "open"
+  },
+  {
+    "id": 16,
+    "CEVID": "CEV-016",
+    "Title": "Improper Access Control in Reports Module",
+    "severity": "High",
+    "cvss": 8.0,
+    "affectedSystems": ["Reports Service"],
+    "status": "open"
+  },
+  {
+    "id": 17,
+    "CEVID": "CEV-017",
+    "Title": "Server-Side Request Forgery in Image Fetcher",
+    "severity": "High",
+    "cvss": 8.6,
+    "affectedSystems": ["Image Processing Service"],
+    "status": "open"
+  },
+  {
+    "id": 18,
+    "CEVID": "CEV-018",
+    "Title": "Use of Weak Cryptography in Data Storage",
+    "severity": "Medium",
+    "cvss": 6.5,
+    "affectedSystems": ["Database Server"],
+    "status": "open"
+  },
+  {
+    "id": 19,
+    "CEVID": "CEV-019",
+    "Title": "Exposure of Internal IP Addresses",
+    "severity": "Low",
+    "cvss": 3.7,
+    "affectedSystems": ["API Gateway"],
+    "status": "open"
+  },
+  {
+    "id": 20,
+    "CEVID": "CEV-020",
+    "Title": "Improper Session Expiration",
+    "severity": "Medium",
+    "cvss": 5.9,
+    "affectedSystems": ["Web Portal", "Mobile App"],
+    "status": "open"
+  },
+  {
+    "id": 21,
+    "CEVID": "CEV-021",
+    "Title": "Path Traversal in Log Viewer",
+    "severity": "Medium",
+    "cvss": 6.3,
+    "affectedSystems": ["Admin Portal"],
+    "status": "open"
+  },
+  {
+    "id": 22,
+    "CEVID": "CEV-022",
+    "Title": "Improper Input Validation in Search",
+    "severity": "Low",
+    "cvss": 4.8,
+    "affectedSystems": ["Web Portal"],
+    "status": "open"
+  },
+  {
+    "id": 23,
+    "CEVID": "CEV-023",
+    "Title": "Missing Security Headers in HTTP Response",
+    "severity": "Low",
+    "cvss": 3.9,
+    "affectedSystems": ["Web Server"],
+    "status": "open"
+  },
+  {
+    "id": 24,
+    "CEVID": "CEV-024",
+    "Title": "Unencrypted Communication over HTTP",
+    "severity": "High",
+    "cvss": 7.2,
+    "affectedSystems": ["Web Portal", "API Gateway"],
+    "status": "open"
+  },
+  {
+    "id": 25,
+    "CEVID": "CEV-025",
+    "Title": "Improper Logging of Sensitive Data",
+    "severity": "Medium",
+    "cvss": 5.6,
+    "affectedSystems": ["Logging Service"],
+    "status": "open"
+  }
+]
