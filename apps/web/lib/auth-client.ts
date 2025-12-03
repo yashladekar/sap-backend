@@ -4,9 +4,10 @@ import { createAuthClient } from "better-auth/react";
 
 /**
  * Better Auth client for client-side usage
+ * Points to the API server where Better Auth is running
  */
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL ?? "http://localhost:3000",
+  baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001",
 });
 
 export const {
@@ -29,7 +30,7 @@ type AuthResult = { error?: { message: string } };
 export const forgetPassword = async (opts: ForgetPasswordOpts): Promise<AuthResult> => {
   try {
     // Use fetch directly for password reset
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BETTER_AUTH_URL ?? "http://localhost:3000"}/api/auth/forget-password`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/auth/forget-password`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(opts),
@@ -46,7 +47,7 @@ export const forgetPassword = async (opts: ForgetPasswordOpts): Promise<AuthResu
 
 export const resetPassword = async (opts: ResetPasswordOpts): Promise<AuthResult> => {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BETTER_AUTH_URL ?? "http://localhost:3000"}/api/auth/reset-password`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/auth/reset-password`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(opts),

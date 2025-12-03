@@ -8,7 +8,6 @@ import {
   LogOut,
   Sparkles,
 } from "lucide-react"
-import { useRouter } from "next/navigation"
 
 import {
   Avatar,
@@ -30,22 +29,13 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@workspace/ui/components/sidebar"
-import { signOut, useSession } from "@/lib/auth-client"
+import { useSession } from "@/lib/auth-client"
+import { useSessionSyncContext } from "@/components/providers/session-sync-provider"
 
 export function NavUser() {
   const { isMobile } = useSidebar()
   const { data: session, isPending } = useSession()
-  const router = useRouter()
-
-  const handleLogout = async () => {
-    await signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/login")
-        },
-      },
-    })
-  }
+  const { handleLogout } = useSessionSyncContext()
 
   // Show loading state or nothing if no session
   if (isPending) {
